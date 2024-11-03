@@ -22,7 +22,7 @@ export default function Home() {
             priority
           />
           <h1 className="hb-4 text-4xl font-extrabold leading-none tracking-tight text-center">
-            Katey's Divide-the-Money Game
+            Katey&apos;s Divide-the-Money Game
           </h1>
           <div className="flex gap-4 items-center flex-col sm:flex-row">
             <input
