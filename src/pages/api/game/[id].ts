@@ -29,7 +29,7 @@ export default async function handler(
       });
       const data = await dynamoClient.send(command);
       if (data.Item) {
-        return res.status(200).json({ ok: true, id: data.Item.id });
+        return res.status(200).json({ ok: true, id: data.Item.id.S });
       } else {
         return res.status(404).json({ ok: false, message: "Game not found" });
       }
