@@ -6,8 +6,6 @@ import { awsCredentialsProvider } from "@vercel/functions/oidc";
 const AWS_REGION = process.env.AWS_REGION || "us-east-1";
 const AWS_ROLE_ARN = process.env.AWS_ROLE_ARN!;
 
-console.log(`Role arn is ${AWS_ROLE_ARN}`);
-
 const dynamoClient = new DynamoDB.DynamoDBClient({
   region: AWS_REGION,
   // Use the Vercel AWS SDK credentials provider
