@@ -5,7 +5,7 @@ import { useState } from "react";
 
 export default function Home() {
   async function fetchGame() {
-    const response = await fetch(`/api/game/verify/${gameId}`);
+    const response = await fetch(`/api/game/${gameId}`);
     const data = await response.json();
     return data;
   }
