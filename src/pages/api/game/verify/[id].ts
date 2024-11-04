@@ -28,7 +28,7 @@ export default async function handler(
         Key: { id: { S: gameId } },
       });
       const data = await dynamoClient.send(command);
-      return data.Item;
+      res.status(200).end({ item: data });
     }
     // Handle GET request
     //res.status(200).json({ message: "This is a GET request" });
