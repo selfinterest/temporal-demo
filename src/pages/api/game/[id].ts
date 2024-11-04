@@ -31,7 +31,7 @@ export default async function handler(
       if (data.Item) {
         return res.status(200).json({ item: data.Item });
       } else {
-        return res.status(404);
+        return res.status(404).json({ ok: false, message: "Game not found" });
       }
     }
     // Handle GET request
