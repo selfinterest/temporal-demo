@@ -1,24 +1,13 @@
-import { NextApiRequest, NextApiResponse } from "next";
-
+import { getDynamoClient } from "@/services/dynamo";
 import * as DynamoDB from "@aws-sdk/client-dynamodb";
-import { awsCredentialsProvider } from "@vercel/functions/oidc";
-
-const AWS_REGION = process.env.AWS_REGION || "us-east-1";
-const AWS_ROLE_ARN = process.env.AWS_ROLE_ARN!;
-
-const dynamoClient = new DynamoDB.DynamoDBClient({
-  region: AWS_REGION,
-  // Use the Vercel AWS SDK credentials provider
-  credentials: awsCredentialsProvider({
-    roleArn: AWS_ROLE_ARN,
-  }),
-});
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (req.method === "GET") {
+    const dynamoClient = getDynamoClient();
     const gameId = req.query.id;
     if (!gameId || Array.isArray(gameId)) {
       res.status(400).end(`Invalid request`);
@@ -29,7 +18,11 @@ export default async function handler(
       });
       const data = await dynamoClient.send(command);
       if (data.Item) {
-        return res.status(200).json({ ok: true, id: data.Item.id.S });
+        return res.status(200).json({
+          ok: true,
+          id: data.Item.id.S,
+          expiration: data.Item.expiration.N,
+        });
       } else {
         return res.status(404).json({ ok: false, message: "Game not found" });
       }

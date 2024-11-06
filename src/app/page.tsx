@@ -1,7 +1,8 @@
 "use client";
 import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   async function fetchGame() {
@@ -10,11 +11,20 @@ export default function Home() {
     return data;
   }
 
+  const { push } = useRouter();
+
   const mutation = useMutation({
     mutationFn: fetchGame,
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       // Handle the data on success
-      console.log("API Response:", data);
+      if (data.ok) {
+        // set localStorage and do redirect
+        localStorage.setItem("gameId", data.id);
+        localStorage.setItem("gameExpiration", data.expiration);
+        push(`/game/${data.id}`);
+      } else {
+        setGameError("Game not found");
+      }
     },
     onError: (error) => {
       // Handle any errors
@@ -22,11 +32,20 @@ export default function Home() {
     },
   });
 
+  useEffect(() => {
+    const gameId = localStorage.getItem("gameId");
+    const expiration = Number(localStorage.getItem("gameExpiration"));
+    const now = Date.now();
+    if (expiration < now && gameId) {
+      push(`/game/${gameId}`);
+    }
+  });
   const verifyGameAndRedirect = () => {
     mutation.mutate();
   };
 
   const [gameId, setGameId] = useState("");
+  const [gameError, setGameError] = useState("");
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
@@ -40,7 +59,10 @@ export default function Home() {
             type="text"
             className="border border-gray-300 p-2 rounded-md flex-1"
             placeholder="Game ID"
-            onChange={(e) => setGameId(e.target.value?.toUpperCase())}
+            onChange={(e) => {
+              setGameError("");
+              setGameId(e.target.value?.toUpperCase());
+            }}
             value={gameId}
           />
           <button
@@ -50,6 +72,7 @@ export default function Home() {
             Submit
           </button>
         </div>
+        {gameError ? <div>{gameError}</div> : <div></div>}
       </main>
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
         <div>&copy; Katey Watson 2024</div>
