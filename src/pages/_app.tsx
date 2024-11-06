@@ -1,16 +1,13 @@
-import { QueryClient } from "@tanstack/react-query";
 import "../app/globals.css";
 
 import type { AppProps } from "next/app";
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+import ReactQueryProvider from "@/utils/providers/react-query-provider";
 
 export default function TemporalDemo({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+  return (
+    <ReactQueryProvider>
+      <Component {...pageProps} />
+    </ReactQueryProvider>
+  );
 }

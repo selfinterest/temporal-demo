@@ -1,7 +1,7 @@
 "use client";
 import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 
@@ -21,9 +21,6 @@ export default function Home() {
       if (data.ok) {
         Cookies.set("gameId", data.id);
         Cookies.set("gameExpiration", data.expiration);
-        // set localStorage and do redirect
-        //localStorage.setItem("gameId", data.id);
-        //localStorage.setItem("gameExpiration", data.expiration);
         push(`/game/${data.id}`);
       } else {
         setGameError("Game not found");
@@ -34,15 +31,6 @@ export default function Home() {
       console.error("Error fetching data:", error);
     },
   });
-
-  /*useEffect(() => {
-    const gameId = localStorage.getItem("gameId");
-    const expiration = Number(localStorage.getItem("gameExpiration"));
-    const now = Date.now();
-    if (expiration < now && gameId) {
-      push(`/game/${gameId}`);
-    }
-  });*/
 
   const verifyGameAndRedirect = () => {
     mutation.mutate();
@@ -72,6 +60,7 @@ export default function Home() {
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
             onClick={verifyGameAndRedirect}
+            disabled={gameId.length !== 4}
           >
             Submit
           </button>

@@ -2,8 +2,36 @@
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
+import { useMutation } from "@tanstack/react-query";
 
 const GameScreen: React.FC = () => {
+  async function submitBid() {
+    const response = await fetch(`/api/game/${gameId}/submit-bid`, {
+      method: "post",
+      body: JSON.stringify({
+        gameId,
+        email,
+        bid,
+        paymentMethod,
+      }),
+    });
+    const data = await response.json();
+    return data;
+  }
+  const mutation = useMutation({
+    mutationFn: submitBid,
+    onSuccess: async (data) => {
+      // Handle the data on success
+      if (data.ok) {
+      } else {
+        //setGameError("Game not found");
+      }
+    },
+    onError: (error) => {
+      // Handle any errors
+      console.error("Error fetching data:", error);
+    },
+  });
   const [gameId, setGameId] = useState<string | null>(null);
   const router = useRouter();
 
@@ -30,8 +58,12 @@ const GameScreen: React.FC = () => {
 
   const handleBidSubmit = () => {
     // Handle bid submission (e.g., validation, sending data)
-    alert(`Bid submitted: $${bid} via ${paymentMethod}`);
+    //alert(`Bid submitted: $${bid} via ${paymentMethod}`);
+    mutation.mutate();
   };
+
+  // Check if the Submit button should be enabled
+  const isSubmitDisabled = paymentId.trim() === "" || email.trim() === "";
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       {/* Header */}
@@ -153,7 +185,12 @@ const GameScreen: React.FC = () => {
           {/* Submit Button */}
           <button
             onClick={handleBidSubmit}
-            className="w-full bg-green-500 text-white py-2 rounded font-semibold hover:bg-green-600 transition-colors"
+            disabled={isSubmitDisabled}
+            className={`w-full py-2 rounded font-semibold transition-colors ${
+              isSubmitDisabled
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-green-500 hover:bg-green-600 text-white"
+            }`}
           >
             Submit Bid
           </button>

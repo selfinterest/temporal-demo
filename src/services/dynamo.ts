@@ -24,3 +24,7 @@ export const getDynamoClient = () => {
 
   return dynamoClient;
 };
+
+export const submitBid = () => {
+  const client = getDynamoClient();
+};
