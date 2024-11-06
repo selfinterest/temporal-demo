@@ -3,6 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function Home() {
   async function fetchGame() {
@@ -18,9 +19,11 @@ export default function Home() {
     onSuccess: async (data) => {
       // Handle the data on success
       if (data.ok) {
+        Cookies.set("gameId", data.id);
+        Cookies.set("gameExpiration", data.expiration);
         // set localStorage and do redirect
-        localStorage.setItem("gameId", data.id);
-        localStorage.setItem("gameExpiration", data.expiration);
+        //localStorage.setItem("gameId", data.id);
+        //localStorage.setItem("gameExpiration", data.expiration);
         push(`/game/${data.id}`);
       } else {
         setGameError("Game not found");
@@ -32,14 +35,15 @@ export default function Home() {
     },
   });
 
-  useEffect(() => {
+  /*useEffect(() => {
     const gameId = localStorage.getItem("gameId");
     const expiration = Number(localStorage.getItem("gameExpiration"));
     const now = Date.now();
     if (expiration < now && gameId) {
       push(`/game/${gameId}`);
     }
-  });
+  });*/
+
   const verifyGameAndRedirect = () => {
     mutation.mutate();
   };
