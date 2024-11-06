@@ -96,7 +96,7 @@ const GameScreen: React.FC = () => {
               sent using preferred payment method.
             </p>
             <p className="text-sm text-center">
-              Click "Submit Bid" to finalize your entry. Good luck!
+              Click &quot;Submit Bid&quot; to finalize your entry. Good luck!
             </p>
           </div>
           <h2 className="text-2xl font-bold mb-6 text-center">

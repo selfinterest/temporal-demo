@@ -27,4 +27,5 @@ export const getDynamoClient = () => {
 
 export const submitBid = () => {
   const client = getDynamoClient();
+  return client;
 };
